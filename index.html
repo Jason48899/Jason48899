@@ -1,0 +1,127 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>我的圖片相簿</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, "Microsoft JhengHei", sans-serif;
+    background: #ecf0d1;
+    text-align: center;
+}
+
+/* 頁首 */
+header {
+    background: #f58403;
+    color: rgb(25, 13, 161);
+    padding: 35px 15px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+/* 主要內容 */
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 45px 20px;
+}
+
+h2 {
+    color: #294b70;
+}
+
+/* 相簿按鈕 */
+.albums {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-top: 40px;
+}
+
+.album {
+    display: block;
+    width: 230px;
+    padding: 40px 15px;
+    background: rgb(236, 223, 103);
+    border-radius: 15px;
+    box-shadow: 0 3px 12px #ccc;
+
+    color: #294b70;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+.album:hover {
+    background: #dceaf8;
+    transform: translateY(-6px);
+}
+
+/* 頁尾 */
+footer {
+    margin-top: 80px;
+    padding: 20px;
+    background: #fc7804;
+    color: rgb(35, 4, 189);
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>📷 我的圖片相簿</h1>
+    <p>歡迎瀏覽我的照片</p>
+</header>
+
+<div class="container">
+
+    <h2>請選擇相簿</h2>
+
+    <p>點選下方按鈕進入照片瀏覽</p>
+
+    <div class="albums">
+
+        <a class="album"
+           href="gallery.html?album=album1">
+           🖼️ 相簿一
+        </a>
+
+        <a class="album"
+           href="gallery.html?album=album2">
+           🌄 相簿二
+        </a>
+
+        <a class="album"
+           href="gallery.html?album=album3">
+           🌸 相簿三
+        </a>
+
+    </div>
+
+</div>
+
+<footer>
+    © 2026.12.31
+</footer>
+
+</body>
+</html>

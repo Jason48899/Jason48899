@@ -1,0 +1,366 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>照片瀏覽</title>
+
+<style>
+
+/* 全域設定 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, "Microsoft JhengHei", sans-serif;
+    background: #c9e7f2;
+}
+
+/* 頁首 */
+header {
+    background: #f5a503;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+/* 主要內容 */
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 25px 15px;
+    text-align: center;
+}
+
+h2 {
+    color: #294b70;
+}
+
+/* 直立式照片排列 */
+.gallery {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 25px;
+
+    width: 100%;
+
+    padding: 20px;
+
+}
+
+/* 照片 */
+.gallery img {
+    display: block;
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 3px 12px #ccc;
+}
+
+.gallery img:hover {
+
+    transform: scale(1.01);
+
+}
+
+/* 按鈕 */
+button {
+
+    border: none;
+
+    background: #294b70;
+
+    color: white;
+
+    padding: 13px 25px;
+
+    border-radius: 8px;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    margin: 20px;
+
+}
+
+button:hover {
+
+    background: #142d49;
+
+}
+
+/* 放大照片視窗 */
+.modal {
+
+    display: none;
+
+    position: fixed;
+
+    z-index: 1000;
+
+    inset: 0;
+
+    background: rgba(0,0,0,0.92);
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 20px;
+
+}
+
+.modal img {
+
+    max-width: 95%;
+
+    max-height: 90vh;
+
+    object-fit: contain;
+
+}
+
+.close {
+
+    position: absolute;
+
+    top: 15px;
+
+    right: 30px;
+
+    color: white;
+
+    font-size: 45px;
+
+    cursor: pointer;
+
+}
+
+/* 手機版 */
+@media(max-width:600px) {
+
+    .gallery {
+
+        padding: 10px;
+
+        gap: 15px;
+
+    }
+
+    button {
+
+        font-size: 14px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>📷 我的圖片相簿</h1>
+
+    <p>照片瀏覽專區</p>
+
+</header>
+
+<div class="container">
+
+    <h2 id="title">照片瀏覽</h2>
+
+    <p>往下滑動瀏覽照片，點選照片可以放大</p>
+
+    <!-- 照片顯示區 -->
+    <div class="gallery" id="gallery">
+
+    </div>
+
+    <!-- 回首頁 -->
+    <button onclick="location.href='index.html'">
+
+        🏠 回首頁
+
+    </button>
+
+</div>
+
+<!-- 照片放大視窗 -->
+<div class="modal"
+     id="modal"
+     onclick="closePhoto()">
+
+    <span class="close">&times;</span>
+
+    <img id="bigPhoto"
+         src=""
+         alt="放大照片"
+         onclick="event.stopPropagation()">
+
+</div>
+
+<script>
+
+// ===================================
+// 1. 相簿照片設定
+// ===================================
+
+const albums = {
+
+    album1: {
+    title: "相簿一",
+
+    files: Array.from(
+        { length: 100 },
+        (_, i) => `${String(i + 1).padStart(2, "0")}.jpg`
+    )
+},
+
+    album2: {
+
+        title: "相簿二",
+
+        files: Array.from(
+        { length: 100 },
+        (_, i) => `${String(i + 1).padStart(2, "0")}.jpg`
+    )
+
+    },
+
+    album3: {
+
+        title: "相簿三",
+
+        files: Array.from(
+        { length: 100 },
+        (_, i) => `${String(i + 1).padStart(2, "0")}.jpg`
+    )
+
+},
+};
+
+
+// ===================================
+// 2. 讀取網址相簿參數
+// ===================================
+
+const params = new URLSearchParams(
+    window.location.search
+);
+
+const album = params.get("album");
+
+const selected = albums[album] || albums.album1;
+
+
+// ===================================
+// 3. 顯示相簿名稱
+// ===================================
+
+document.getElementById("title").textContent =
+    selected.title;
+
+
+// ===================================
+// 4. 顯示照片
+// ===================================
+
+const gallery = document.getElementById("gallery");
+
+selected.files.forEach(function(file) {
+
+    const img = document.createElement("img");
+
+    img.src = "images/" + (albums[album] ? album : "album1")
+              + "/" + file;
+
+    img.alt = file;
+
+    // 照片載入失敗
+    img.onerror = function() {
+
+        console.warn("找不到照片：" + this.src);
+
+        this.style.display = "none";
+
+    };
+
+    // 點擊照片放大
+    img.onclick = function() {
+
+        openPhoto(this.src);
+
+    };
+
+    gallery.appendChild(img);
+
+});
+
+
+// ===================================
+// 5. 放大照片
+// ===================================
+
+function openPhoto(src) {
+
+    document.getElementById("bigPhoto").src = src;
+
+    document.getElementById("modal").style.display =
+        "flex";
+
+}
+
+
+// ===================================
+// 6. 關閉照片
+// ===================================
+
+function closePhoto() {
+
+    document.getElementById("modal").style.display =
+        "none";
+
+}
+
+
+// ===================================
+// 7. ESC 關閉照片
+// ===================================
+
+document.addEventListener("keydown", function(e) {
+
+    if (e.key === "Escape") {
+
+        closePhoto();
+
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>
